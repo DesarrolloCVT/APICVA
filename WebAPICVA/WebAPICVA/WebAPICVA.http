@@ -1,0 +1,6 @@
+@WebAPICVA_HostAddress = http://localhost:5150
+
+GET {{WebAPICVA_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
