@@ -3,32 +3,31 @@
 namespace WebAPICVA.Extensiones
 {
     public class JwtMiddleware
-{
-    private readonly RequestDelegate _next;
-
-    public JwtMiddleware(RequestDelegate next)
     {
-        _next = next;
-    }
+        private readonly RequestDelegate _next;
 
-    public async Task Invoke(HttpContext context)
-    {
-        var authService = context.RequestServices.GetRequiredService<AuthService>();
-        var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
-
-        if (authHeader != null && authHeader.StartsWith("Bearer "))
+        public JwtMiddleware(RequestDelegate next)
         {
-            string token = authHeader.Substring("Bearer ".Length).Trim();
-
-            if (await authService.IsTokenBlacklisted(token))
-            {
-                context.Response.StatusCode = 401; // Unauthorized
-                await context.Response.WriteAsync("Token inválido o expirado.");
-                return;
-            }
+            _next = next;
         }
 
-        await _next(context);
+        public async Task Invoke(HttpContext context, TokenBlacklistService tokenBlacklistService)
+        {
+            var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
+
+            if (authHeader != null && authHeader.StartsWith("Bearer "))
+            {
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+
+                if (await tokenBlacklistService.IsTokenBlacklisted(token))
+                {
+                    context.Response.StatusCode = 401;
+                    await context.Response.WriteAsync("Token inválido");
+                    return;
+                }
+            }
+
+            await _next(context);
+        }
     }
-}
 }

@@ -35,14 +35,20 @@ namespace WebAPICVA.Controllers
 
         [HttpPost("logout")]
         [Authorize]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            var authHeader = Request.Headers["Authorization"].FirstOrDefault();
 
-            if (string.IsNullOrEmpty(token))
+            if (authHeader == null || !authHeader.StartsWith("Bearer "))
                 return BadRequest("Token no válido");
 
-            _tokenBlacklistService.AddToBlacklist(token);
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
+            var expiration = jwtToken?.ValidTo ?? DateTime.UtcNow;
+
+            await _tokenBlacklistService.AddToBlacklist(token, expiration);
 
             return Ok(new { message = "Sesión cerrada correctamente" });
         }
