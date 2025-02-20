@@ -8,7 +8,7 @@ namespace WebAPICVA.DTOs
         public int Folio { get; set; }
         public string Tipo { get; set; }
         public string Moneda { get; set; }
-        public string Fecha { get; set; }
+        public DateTime Fecha { get; set; }
         public string Cliente { get; set; }
         public string Metodo_Pago { get; set; }
         public string Banco { get; set; }

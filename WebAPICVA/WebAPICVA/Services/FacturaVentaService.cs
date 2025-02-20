@@ -25,10 +25,9 @@ namespace WebAPICVA.Services
             {
                 Folio = facturaVentaDto.Folio,
                 Cliente = facturaVentaDto.Cliente,
-                Dir_Despacho = facturaVentaDto.Dir_Despacho,
+                Direccion_Despacho = facturaVentaDto.Direccion_Despacho,
                 Moneda = facturaVentaDto.Moneda,
-                Fecha = facturaVentaDto.Fecha,
-                Total = facturaVentaDto.Total
+                Fecha = facturaVentaDto.Fecha
             };
             await _facturaVentaRepository.AddAsync(facturaVenta);
         }
@@ -40,10 +39,9 @@ namespace WebAPICVA.Services
 
             facturaVenta.Folio = facturaVentaDto.Folio;
             facturaVenta.Cliente = facturaVentaDto.Cliente;
-            facturaVenta.Dir_Despacho = facturaVentaDto.Dir_Despacho;
+            facturaVenta.Direccion_Despacho = facturaVentaDto.Direccion_Despacho;
             facturaVenta.Moneda = facturaVentaDto.Moneda;
             facturaVenta.Fecha = facturaVentaDto.Fecha;
-            facturaVenta.Total = facturaVentaDto.Total;
             await _facturaVentaRepository.UpdateAsync(facturaVenta);
         }
 

@@ -43,6 +43,7 @@ namespace WebAPICVA.Services
             ingresos.Folio = ingresoDto.Folio;
             ingresos.Tipo = ingresoDto.Tipo;
             ingresos.Moneda = ingresoDto.Moneda;
+            ingresos.Fecha = ingresoDto.Fecha;
             ingresos.Cliente = ingresoDto.Cliente;
             ingresos.Metodo_Pago = ingresoDto.Metodo_Pago;
             ingresos.Banco = ingresoDto.Banco;

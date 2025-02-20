@@ -7,6 +7,5 @@ namespace WebAPICVA.Models
         [Key]
         public int Codigo_Banco { get; set; }
         public int Numero { get; set; }
-        public int Saldo { get; set; }
     }
 }

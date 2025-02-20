@@ -26,7 +26,12 @@ namespace WebAPICVA.Services
                 Codigo = tipoDto.Codigo,
                 Nombre = tipoDto.Nombre,
                 Tipo_Dato = tipoDto.Tipo_Dato,
-                Cuenta = tipoDto.Cuenta
+                Cuenta = tipoDto.Cuenta,
+                Pago_Factura = tipoDto.Pago_Factura,
+                Gasto_Comercializacion = tipoDto.Gasto_Comercializacion,
+                Comisiones = tipoDto.Gasto_Comercializacion,
+                Gasto_Financiero = tipoDto.Gasto_Financiero,
+                Anticipo = tipoDto.Anticipo
             };
             await _tipoRepository.AddAsync(tipo);
         }
@@ -40,6 +45,11 @@ namespace WebAPICVA.Services
             tipo.Nombre = tipoDto.Nombre;
             tipo.Tipo_Dato = tipoDto.Tipo_Dato;
             tipo.Cuenta = tipoDto.Cuenta;
+            tipo.Pago_Factura = tipoDto.Pago_Factura;
+            tipo.Gasto_Comercializacion = tipoDto.Gasto_Comercializacion;
+            tipo.Comisiones = tipoDto.Comisiones;
+            tipo.Gasto_Financiero = tipoDto.Gasto_Financiero;
+            tipo.Anticipo = tipoDto.Anticipo;
             await _tipoRepository.UpdateAsync(tipo);
         }
 

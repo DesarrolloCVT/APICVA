@@ -24,8 +24,7 @@ namespace WebAPICVA.Services
             var bancoDetalle = new BancoDetalle
             {
                 Codigo_Banco = bancoDetalleDto.Codigo_Banco,
-                Numero = bancoDetalleDto.Numero,
-                Saldo = bancoDetalleDto.Saldo
+                Numero = bancoDetalleDto.Numero
             };
             await _bancoDetalleRepository.AddAsync(bancoDetalle);
         }
@@ -37,7 +36,6 @@ namespace WebAPICVA.Services
 
             bancoDetalle.Codigo_Banco = bancoDetalleDto.Codigo_Banco;
             bancoDetalle.Numero = bancoDetalleDto.Numero;
-            bancoDetalle.Saldo = bancoDetalleDto.Saldo;
             await _bancoDetalleRepository.UpdateAsync(bancoDetalle);
         }
 

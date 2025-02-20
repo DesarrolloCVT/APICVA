@@ -36,14 +36,14 @@ namespace WebAPICVA.Controllers
         }
 
         [HttpPut("{codigo_banco}")]
-        public async Task<IActionResult> PutBanco(int codigo, BancoDetalleDTO bancoDetalleDto)
+        public async Task<IActionResult> PutBancoDetalle(int codigo_banco, BancoDetalleDTO bancoDetalleDto)
         {
-            await _bancoDetalleService.UpdateAsync(codigo, bancoDetalleDto);
+            await _bancoDetalleService.UpdateAsync(codigo_banco, bancoDetalleDto);
             return NoContent();
         }
 
         [HttpDelete("{codigo_banco}")]
-        public async Task<IActionResult> DeleteBanco(int codigo)
+        public async Task<IActionResult> DeleteBancoDetalle(int codigo)
         {
             await _bancoDetalleService.DeleteAsync(codigo);
             return NoContent();

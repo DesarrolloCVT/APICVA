@@ -18,32 +18,32 @@ namespace WebAPICVA.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tipo>>> GetBanco() =>
+        public async Task<ActionResult<IEnumerable<Tipo>>> GetTipos() =>
             Ok(await _tipoService.GetAllAsync());
 
         [HttpGet("{codigo}")]
-        public async Task<ActionResult<Tipo>> GetBanco(int codigo)
+        public async Task<ActionResult<Tipo>> GetTipo(int codigo)
         {
-            var banco = await _tipoService.GetByIdAsync(codigo);
-            return banco == null ? NotFound() : Ok(banco);
+            var tipo = await _tipoService.GetByIdAsync(codigo);
+            return tipo == null ? NotFound() : Ok(tipo);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostBanco(TipoDTO tipoDto)
+        public async Task<IActionResult> PostTipo(TipoDTO tipoDto)
         {
             await _tipoService.AddAsync(tipoDto);
-            return CreatedAtAction(nameof(GetBanco), new { codigo = tipoDto.Codigo }, tipoDto);
+            return CreatedAtAction(nameof(GetTipo), new { codigo = tipoDto.Codigo }, tipoDto);
         }
 
         [HttpPut("{codigo}")]
-        public async Task<IActionResult> PutBanco(int codigo, TipoDTO tipoDto)
+        public async Task<IActionResult> PutTipo(int codigo, TipoDTO tipoDto)
         {
             await _tipoService.UpdateAsync(codigo, tipoDto);
             return NoContent();
         }
 
         [HttpDelete("{codigo}")]
-        public async Task<IActionResult> DeleteBanco(int codigo)
+        public async Task<IActionResult> DeleteTipo(int codigo)
         {
             await _tipoService.DeleteAsync(codigo);
             return NoContent();

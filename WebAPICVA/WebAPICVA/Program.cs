@@ -2,11 +2,36 @@ using WebAPICVA.Data;
 using Microsoft.EntityFrameworkCore;
 using WebAPICVA.Repositories;
 using WebAPICVA.Services;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using WebAPICVA.Extensiones;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<TokenBlacklistService>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(key)
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 // Registrar el repositorio y el servicio en la inyección de dependencias
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
@@ -42,6 +67,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -49,6 +75,40 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+/*
+Codigo de Pruebas
+ */
+
+
+// Agregar middleware de autenticación JWT al pipeline
+app.UseMiddleware<JwtMiddleware>();
+
+// Usar middleware de autenticación
+app.UseAuthentication();
+
+// Usar middleware de autorización
 app.UseAuthorization();
+
+// Mapear los controladores
 app.MapControllers();
+
+// Configurar la base de datos y migraciones al inicio
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var dbContext = services.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate();
+}
+
+// Ejecutar la aplicación
 app.Run();
+
+
+
+
+
+
+/*app.UseAuthorization();
+app.MapControllers();
+app.Run();*/

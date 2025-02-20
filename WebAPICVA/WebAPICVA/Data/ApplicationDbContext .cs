@@ -20,5 +20,6 @@ namespace WebAPICVA.Data
         public DbSet<FacturaVenta> FacturaVenta { get; set; }
         public DbSet<FacturaCompraDetalle> FacturaCompraDetalle { get; set; }
         public DbSet<FacturaVentaDetalle> FacturaVentaDetalle { get; set; }
+        public DbSet<TokenBlacklist> TokenBlacklist { get; set; }
     }
 }

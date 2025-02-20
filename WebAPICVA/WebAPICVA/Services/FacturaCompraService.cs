@@ -26,8 +26,7 @@ namespace WebAPICVA.Services
                 Folio = facturaCompraDto.Folio,
                 Proveedor = facturaCompraDto.Proveedor,
                 Fecha = facturaCompraDto.Fecha,
-                Moneda = facturaCompraDto.Moneda,
-                Total = facturaCompraDto.Total
+                Moneda = facturaCompraDto.Moneda
             };
             await _facturaCompraRepository.AddAsync(facturaCompra);
         }
@@ -41,7 +40,6 @@ namespace WebAPICVA.Services
             facturaCompra.Proveedor = facturaCompraDto.Proveedor;
             facturaCompra.Fecha = facturaCompraDto.Fecha;
             facturaCompra.Moneda = facturaCompraDto.Moneda;
-            facturaCompra.Total = facturaCompraDto.Total;
             await _facturaCompraRepository.UpdateAsync(facturaCompra);
         }
 
