@@ -1,4 +1,4 @@
-using WebAPICVA.Data;
+锘縰sing WebAPICVA.Data;
 using Microsoft.EntityFrameworkCore;
 using WebAPICVA.Repositories;
 using WebAPICVA.Services;
@@ -9,7 +9,7 @@ using WebAPICVA.Extensiones;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
+
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -17,7 +17,205 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TokenBlacklistService>();
 
+/* Codigo de pruebas*/
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
+
+var secretKey = "EstaEsUnaClaveMuySeguraDe32Caracteres!"; // Debe coincidir con AuthService
+
+
+
+//var key = Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]);
+//var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
+var key = Encoding.UTF8.GetBytes(secretKey);
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+//var secretKey = Encoding.UTF8.GetBytes(jwtSettings["Secret"]);
+
+/*Codigo de Prueba*/
+Console.WriteLine($"馃攳 Clave secreta usada: {secretKey}");
+
+
+/*builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key), // Aseg煤rate de que sea la misma clave usada para generar los tokens
+        ValidateIssuer = false,  // Desactiva validaci贸n de Issuer si no lo usas
+        ValidateAudience = false, // Desactiva validaci贸n de Audience si no lo usas
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero  // Evita tolerancia de tiempo en la expiraci贸n del token
+    };
+});*/
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+
+        /*options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };*/
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            // Valida la clave del emisor
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+
+            // Si necesitas validar el emisor (issuer), agrega esta validaci贸n:
+            ValidateIssuer = true,
+            ValidIssuer = "WebAPICVA", // Aseg煤rate de que este sea el emisor correcto
+
+            // Valida la audiencia (audience)
+            ValidateAudience = true,
+            ValidAudience = "DesktopAplicationCV", // Aseg煤rate de que esta sea la audiencia correcta
+
+            // Validaci贸n de la expiraci贸n del token
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero // Esto ayuda si el tiempo de vida tiene un peque帽o desfase
+        };
+
+        // Event handlers (opcional)
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                Console.WriteLine("馃攳 Headers recibidos:");
+                foreach (var header in context.Request.Headers)
+                {
+                    Console.WriteLine($"{header.Key}: {header.Value}");
+                }
+
+                if (context.Request.Headers.ContainsKey("Authorization"))
+                {
+                    var rawToken = context.Request.Headers["Authorization"].ToString();
+                    Console.WriteLine($"馃攳 Header Authorization recibido: {rawToken}");
+
+                    // Separa "Bearer " y muestra el token solo
+                    if (rawToken.StartsWith("Bearer "))
+                    {
+                        var tokenOnly = rawToken.Substring(7);
+                        Console.WriteLine($"馃攳 Token limpio: {tokenOnly}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("鈿狅笍 No se encontr贸 el encabezado Authorization.");
+                }
+
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                Console.WriteLine("馃煝 Token validado correctamente en el middleware.");
+                return Task.CompletedTask;
+            },
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine($"馃敶 Error de autenticaci贸n: {context.Exception.Message}");
+                return Task.CompletedTask;
+            }
+        };
+
+        /*options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                Console.WriteLine("馃攳 Headers recibidos:");
+                foreach (var header in context.Request.Headers)
+                {
+                    Console.WriteLine($"{header.Key}: {header.Value}");
+                }
+
+                if (context.Request.Headers.ContainsKey("Authorization"))
+                {
+                    var rawToken = context.Request.Headers["Authorization"].ToString();
+                    Console.WriteLine($"馃攳 Header Authorization recibido: {rawToken}");
+
+                    // Separa "Bearer " y muestra el token solo
+                    if (rawToken.StartsWith("Bearer "))
+                    {
+                        var tokenOnly = rawToken.Substring(7);
+                        Console.WriteLine($"馃攳 Token limpio: {tokenOnly}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("鈿狅笍 No se encontr贸 el encabezado Authorization.");
+                }
+
+                return Task.CompletedTask;
+            },
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine($"馃敶 Error de autenticaci贸n: {context.Exception.Message}");
+                return Task.CompletedTask;
+            }
+        };*/
+    });
+
+builder.Services.AddAuthorization();
+
+/*builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("EstaEsUnaClaveMuySeguraDe32Caracteres!")),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero // Importante: evitar tolerancia de tiempo
+    };
+});*/
+
+
+/*builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            ClockSkew = TimeSpan.Zero
+        };
+    });*/
+
+/*
+ var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
+
+ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -29,11 +227,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(key)
         };
-    });
+    });*/
 
 builder.Services.AddAuthorization();
 
-// Registrar el repositorio y el servicio en la inyecci髇 de dependencias
+// Registrar el repositorio y el servicio en la inyecci贸n de dependencias
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
 builder.Services.AddScoped<IProductoService, ProductoService>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
@@ -67,6 +265,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+/*Codigo de pruebas*/
+app.UseCors("AllowAll");
 
 if (app.Environment.IsDevelopment())
 {
@@ -81,13 +281,13 @@ Codigo de Pruebas
  */
 
 
-// Agregar middleware de autenticaci髇 JWT al pipeline
+// Agregar middleware de autenticaci贸n JWT al pipeline
 app.UseMiddleware<JwtMiddleware>();
 
-// Usar middleware de autenticaci髇
+// Usar middleware de autenticaci贸n
 app.UseAuthentication();
 
-// Usar middleware de autorizaci髇
+// Usar middleware de autorizaci贸n
 app.UseAuthorization();
 
 // Mapear los controladores
@@ -101,7 +301,7 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
 }
 
-// Ejecutar la aplicaci髇
+// Ejecutar la aplicaci贸n
 app.Run();
 
 

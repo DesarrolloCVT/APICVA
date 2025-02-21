@@ -14,11 +14,19 @@ namespace WebAPICVA.Services
             _context = context;
         }
 
-        public async Task AddToBlacklist(string token, DateTime expiration)
+        public void AddToBlacklist(string token)
+        {
+            Console.WriteLine($"🟢 Agregando token a la lista negra: {token}");
+
+            _context.TokenBlacklist.Add(new TokenBlacklist { Token = token, Expiration = DateTime.UtcNow.AddHours(2) });
+            _context.SaveChanges();
+        }
+
+        /*public async Task AddToBlacklist(string token, DateTime expiration)
         {
             _context.TokenBlacklist.Add(new TokenBlacklist { Token = token, Expiration = expiration });
             await _context.SaveChangesAsync();
-        }
+        }*/
 
         public async Task<bool> IsTokenBlacklisted(string token)
         {
