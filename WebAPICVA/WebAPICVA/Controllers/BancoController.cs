@@ -18,32 +18,32 @@ namespace WebAPICVA.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Banco>>> GetBanco() =>
+        public async Task<ActionResult<IEnumerable<Banco>>> GetBancoDetalle() =>
             Ok(await _bancoService.GetAllAsync());
 
         [HttpGet("{codigo}")]
-        public async Task<ActionResult<Banco>> GetBanco(int codigo)
+        public async Task<ActionResult<Banco>> GetBancoDetalle(int codigo)
         {
             var banco = await _bancoService.GetByIdAsync(codigo);
             return banco == null ? NotFound() : Ok(banco);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostBanco(BancoDTO bancoDto)
+        public async Task<IActionResult> PostBancoDetalle(BancoDTO bancoDto)
         {
             await _bancoService.AddAsync(bancoDto);
-            return CreatedAtAction(nameof(GetBanco), new { codigo = bancoDto.Codigo }, bancoDto);
+            return CreatedAtAction(nameof(GetBancoDetalle), new { codigo = bancoDto.Codigo }, bancoDto);
         }
 
         [HttpPut("{codigo}")]
-        public async Task<IActionResult> PutBanco(int codigo, BancoDTO bancoDto)
+        public async Task<IActionResult> PutBancoDetalle(int codigo, BancoDTO bancoDto)
         {
             await _bancoService.UpdateAsync(codigo, bancoDto);
             return NoContent();
         }
 
         [HttpDelete("{codigo}")]
-        public async Task<IActionResult> DeleteBanco(int codigo)
+        public async Task<IActionResult> DeleteBancoDetalle(int codigo)
         {
             await _bancoService.DeleteAsync(codigo);
             return NoContent();

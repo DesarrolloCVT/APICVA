@@ -1,12 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using WebAPICVA.Data;
 using WebAPICVA.Models;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
 
 namespace WebAPICVA.Services
 {
@@ -14,7 +12,7 @@ namespace WebAPICVA.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _config;
-        private readonly string secretKey = "EstaEsUnaClaveMuySeguraDe32Caracteres!"; // 🔥 DEBE COINCIDIR CON Program.cs
+        //private readonly string secretKey = "v@8vG3#xU!9zP$YkW6rE^tM2L&dC7qN%"; // 🔥 DEBE COINCIDIR CON Program.cs
 
         public AuthService(ApplicationDbContext context, IConfiguration config)
         {
@@ -22,6 +20,7 @@ namespace WebAPICVA.Services
             _config = config;
         }
 
+        /* Codigo Obsoleto
         public async Task<string?> AuthenticateAsync(string usuario, string password)
         {
             var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.UsuarioSistema == usuario);
@@ -39,21 +38,17 @@ namespace WebAPICVA.Services
             Console.WriteLine($"🔍 Token generado: {token}");
 
             return GenerateToken(user.IdUsuario);
-        }
+        }*/
 
         public string GenerateToken(int userId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             //var key = Encoding.UTF8.GetBytes(secretKey); // 🔥 La clave usada para firmar el token
-            /*Codigo de Pruebas*/
-            Console.WriteLine($"🔍 Clave secreta usada: {secretKey}");
+            var key = Encoding.UTF8.GetBytes(_config["JwtSettings:Key"]);
 
-
-
-            /* Codigo de prueba*/
+            /* Codigo Obsoleto
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256); // 🔥 Importante: HmacSha256
-
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
@@ -63,10 +58,9 @@ namespace WebAPICVA.Services
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = creds
-            };
+            };*/
 
-
-            /*var tokenDescriptor = new SecurityTokenDescriptor
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] {
                 new Claim(ClaimTypes.NameIdentifier, userId.ToString())
@@ -76,48 +70,62 @@ namespace WebAPICVA.Services
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature
                 )
-            };*/
+            };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
 
+        /* Codigo Obsoleto
         public async Task<bool> IsTokenBlacklisted(string token)
         {
             return await _context.TokenBlacklist.AnyAsync(t => t.Token == token);
         }
-
-        /*private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly IConfiguration _config;
-        private readonly string _secretKey = "EstaEsUnaClaveMuySeguraDe32Caracteres!"; // Debe coincidir con Program.cs
-
+        
         public AuthService(ApplicationDbContext context, IConfiguration config)
         {
             _context = context;
             _config = config;
-        }
+        }*/
 
         public async Task<string?> AuthenticateAsync(string usuario, string password)
         {
-            var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.UsuarioSistema == usuario);
-
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
-
-            bool passwordValida = BCrypt.Net.BCrypt.Verify(password, user.ClaveEncriptada.Trim());
-
-            if (usuario == null || !BCrypt.Net.BCrypt.Verify(password, user.ClaveEncriptada.Trim()))
+            try
             {
-                return null; // Usuario no encontrado o contraseña incorrecta
-            }
+                var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.UsuarioSistema == usuario);
 
-            return GenerateJwtToken(user);
+                if (user != null)
+                {
+
+                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
+                    bool passwordValida = BCrypt.Net.BCrypt.Verify(password, user.ClaveEncriptada.Trim());
+
+                    if (usuario == null || !BCrypt.Net.BCrypt.Verify(password, user.ClaveEncriptada.Trim()))
+                    {
+                        return null; // Usuario no encontrado o contraseña incorrecta
+                    }
+
+                    return GenerateJwtToken(user);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {   
+                return null;
+            }
+            
         }
 
         private string GenerateJwtToken(Usuarios usuario)
         {
-
-            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtSettings:Key"]));
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtSettings:Key"]));
+            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             if (key.KeySize < 32)
@@ -138,12 +146,14 @@ namespace WebAPICVA.Services
                 expires: DateTime.UtcNow.AddHours(2),
                 signingCredentials: creds);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var TokenFormat = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return TokenFormat;
         }
 
         public async Task<bool> IsTokenBlacklisted(string token)
         {
             return await _context.TokenBlacklist.AnyAsync(t => t.Token == token);
-        }*/
+        }
     }
 }

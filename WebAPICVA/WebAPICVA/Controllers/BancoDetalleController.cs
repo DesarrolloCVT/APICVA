@@ -43,9 +43,9 @@ namespace WebAPICVA.Controllers
         }
 
         [HttpDelete("{codigo_banco}")]
-        public async Task<IActionResult> DeleteBancoDetalle(int codigo)
+        public async Task<IActionResult> DeleteBancoDetalle(int codigo_banco)
         {
-            await _bancoDetalleService.DeleteAsync(codigo);
+            await _bancoDetalleService.DeleteAsync(codigo_banco);
             return NoContent();
         }
     }

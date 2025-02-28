@@ -34,17 +34,90 @@ namespace WebAPICVA.Controllers
         }
 
         [HttpPost("logout")]
-        //[Authorize] // Asegura que solo usuarios autenticados puedan cerrar sesión
+        [Authorize] // Asegura que solo usuarios autenticados puedan cerrar sesión
         public async Task<IActionResult> Logout()
         {
 
-            var authHeader = Request.Headers["Authorization"].ToString();
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return BadRequest(new { message = "Token no encontrado." });
+            }
+
+            Console.WriteLine($"Token recibido en Logout: {token}");
+
+
+            /* Codigo Prueba*/
+
+            Console.WriteLine($"🔍 Token recibido: {token}");
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken != null)
+                {
+                    Console.WriteLine($"✅ Token decodificado correctamente. Header: {jsonToken.Header.Alg}, Payload: {jsonToken.Payload}");
+                }
+                else
+                {
+                    Console.WriteLine("❌ No se pudo decodificar el token.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error al decodificar el token: {ex.Message}");
+            }
+
+            /* */
+
+
+
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            try
+            {
+                var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+                if (jwtToken == null)
+                {
+                    return Unauthorized(new { message = "Token inválido." });
+                }
+
+                Console.WriteLine($"Token expira en: {jwtToken.ValidTo}");
+
+                // Simula una verificación en lista negra
+                if (await _tokenBlacklistService.IsTokenBlacklisted(token))
+                {
+                    return Unauthorized(new { message = "Token en lista negra." });
+                }
+
+                _tokenBlacklistService.AddToBlacklist(token);
+                return Ok(new { message = "Logout exitoso" });
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized(new { message = "Token inválido o corrupto.", error = ex.Message });
+            }
+
+            /*Respaldo */
+
+            /*var authHeader = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
             {
                 return Unauthorized("No se encontró el token en la cabecera.");
+                //return BadRequest(new { message = "Token no encontrado." });
             }
 
             var token = authHeader.Replace("Bearer ", "").Trim();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return BadRequest(new { message = "Token no encontrado." });
+            }
+
             var jwtHandler = new JwtSecurityTokenHandler();
 
             try
@@ -77,8 +150,8 @@ namespace WebAPICVA.Controllers
             if (string.IsNullOrEmpty(token))
                 return BadRequest("Token no válido");
 
-            #region Codigo de Pruebas
-            /* Codigo de pruebas */
+            //#region Codigo de Pruebas
+            //Codigo de pruebas
 
             //var jwtHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
             //var jwtToken = jwtHandler.ReadJwtToken(token);
@@ -86,15 +159,15 @@ namespace WebAPICVA.Controllers
             //Console.WriteLine($"Token expira en: {jwtToken.ValidTo}");
             //Console.WriteLine($"Fecha actual UTC: {DateTime.UtcNow}");
 
-            /*if (jwtToken.ValidTo < DateTime.UtcNow)
-            {
-                return Unauthorized("El token ha expirado.");
-            }*/
-            #endregion
+            //if (jwtToken.ValidTo < DateTime.UtcNow)
+            //{
+                //return Unauthorized("El token ha expirado.");
+            //}
+            //#endregion
 
             _tokenBlacklistService.AddToBlacklist(token);
 
-            return Ok(new { message = "Sesión cerrada correctamente" });
+            return Ok(new { message = "Sesión cerrada correctamente" });*/
 
             #region OFF
             /*var authHeader = Request.Headers["Authorization"].FirstOrDefault();
@@ -114,6 +187,8 @@ namespace WebAPICVA.Controllers
             #endregion
         }
 
+        /* Codigo de Pruebas*/
+        /* ----------------------- */
         [HttpGet("test-auth")]
         [Authorize]
         public IActionResult TestAuth()
@@ -136,5 +211,6 @@ namespace WebAPICVA.Controllers
 
             return Ok(new { message = "Usuario autenticado", claims });
         }
+        /* ----------------------- */
     }
 }

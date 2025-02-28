@@ -9,36 +9,37 @@ using WebAPICVA.Extensiones;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TokenBlacklistService>();
 
-/* Codigo de pruebas*/
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
-var secretKey = "EstaEsUnaClaveMuySeguraDe32Caracteres!"; // Debe coincidir con AuthService
+//var secretKey = "v@8vG3#xU!9zP$YkW6rE^tM2L&dC7qN%"; // Debe coincidir con AuthService
+var secretKey = Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]);
 
+/* -----------------------------------------------------------------------------------------*/
+/* Codigo de Obsoleto 
+var key = Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]);
+var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
+var secretKey = Encoding.UTF8.GetBytes(jwtSettings["Secret"]);*/
+/* -----------------------------------------------------------------------------------------*/
 
+//var key = Encoding.UTF8.GetBytes(secretKey);
+//var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 
-//var key = Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]);
-//var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
-var key = Encoding.UTF8.GetBytes(secretKey);
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-//var secretKey = Encoding.UTF8.GetBytes(jwtSettings["Secret"]);
-
-/*Codigo de Prueba*/
 Console.WriteLine($"🔍 Clave secreta usada: {secretKey}");
 
 
-/*builder.Services.AddAuthentication(options =>
+/* ----------------------------------------------------- */
+/* Codigo de Obsoleto 
+builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -57,6 +58,8 @@ Console.WriteLine($"🔍 Clave secreta usada: {secretKey}");
         ClockSkew = TimeSpan.Zero  // Evita tolerancia de tiempo en la expiración del token
     };
 });*/
+/* ----------------------------------------------------- */
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -64,16 +67,33 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.RequireHttpsMetadata = false;
         options.SaveToken = true;
 
-        /*options.TokenValidationParameters = new TokenValidationParameters
+        options.TokenValidationParameters = new TokenValidationParameters
         {
+            ValidateIssuerSigningKey = true,
+            //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)), // ⚠️ Debe ser la misma clave usada en el token
+            IssuerSigningKey = new SymmetricSecurityKey(secretKey), // ⚠️ Debe ser la misma clave usada en el token
+
+            ValidateIssuer = true,
+            ValidIssuer = "WebAPICVA",
+
+            ValidateAudience = true,
+            ValidAudience = "DesktopAplicationCV",
+
+            ValidateLifetime = true, // Expiración del token
+
+            ClockSkew = TimeSpan.Zero // Asegurar que no haya tiempo extra en la validación
+
+            /*
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
-        };*/
+            */
+        };
 
+        /* Codigo de Obsoleto
         options.TokenValidationParameters = new TokenValidationParameters
         {
             // Valida la clave del emisor
@@ -91,9 +111,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             // Validación de la expiración del token
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero // Esto ayuda si el tiempo de vida tiene un pequeño desfase
-        };
+        };*/
 
-        // Event handlers (opcional)
+        // Event handlers
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -103,6 +123,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 {
                     Console.WriteLine($"{header.Key}: {header.Value}");
                 }
+
+                Console.WriteLine("🔴 StatusCode: " + context.Response.StatusCode);
 
                 if (context.Request.Headers.ContainsKey("Authorization"))
                 {
@@ -130,11 +152,31 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             },
             OnAuthenticationFailed = context =>
             {
+                /*Console.WriteLine($"🔴 Error de autenticación: {context.Exception.Message}");
+                if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                {
+                    context.Response.Headers.Add("Token-Expired", "true");
+                }
+                return Task.CompletedTask;*/
+
                 Console.WriteLine($"🔴 Error de autenticación: {context.Exception.Message}");
+
+                // Captura y muestra el token recibido
+                if (context.Request.Headers.ContainsKey("Authorization"))
+                {
+                    var rawToken = context.Request.Headers["Authorization"].ToString();
+                    Console.WriteLine($"📢 Token recibido: {rawToken}");
+                }
+                else
+                {
+                    Console.WriteLine("❌ No se recibió un token en la cabecera Authorization.");
+                }
+
                 return Task.CompletedTask;
             }
         };
 
+        /* Codigo de respaldo*/
         /*options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -172,9 +214,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };*/
     });
 
+
+builder.Services.Configure<IISServerOptions>(options =>
+{
+    options.MaxRequestBodySize = 204857600; // 100MB
+});
+
 builder.Services.AddAuthorization();
 
-/*builder.Services.AddAuthentication(options =>
+/* ---------------------------------- */
+/* Codigo Obsoleto
+builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -192,10 +242,9 @@ builder.Services.AddAuthorization();
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero // Importante: evitar tolerancia de tiempo
     };
-});*/
+});
 
-
-/*builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.RequireHttpsMetadata = false;
@@ -210,9 +259,8 @@ builder.Services.AddAuthorization();
             ValidAudience = jwtSettings["Audience"],
             ClockSkew = TimeSpan.Zero
         };
-    });*/
+    });
 
-/*
  var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
 
  builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -228,8 +276,7 @@ builder.Services.AddAuthorization();
             IssuerSigningKey = new SymmetricSecurityKey(key)
         };
     });*/
-
-builder.Services.AddAuthorization();
+/* ---------------------------------- */
 
 // Registrar el repositorio y el servicio en la inyección de dependencias
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
@@ -265,7 +312,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-/*Codigo de pruebas*/
 app.UseCors("AllowAll");
 
 if (app.Environment.IsDevelopment())
@@ -275,11 +321,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-/*
-Codigo de Pruebas
- */
-
 
 // Agregar middleware de autenticación JWT al pipeline
 app.UseMiddleware<JwtMiddleware>();
@@ -304,11 +345,9 @@ using (var scope = app.Services.CreateScope())
 // Ejecutar la aplicación
 app.Run();
 
-
-
-
-
-
-/*app.UseAuthorization();
+/* ------------------------ */
+/* Codigo Obsoleto
+app.UseAuthorization();
 app.MapControllers();
 app.Run();*/
+/* ------------------------ */
