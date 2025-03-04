@@ -19,6 +19,9 @@ namespace WebAPICVA.Repositories
         public async Task<Usuarios?> GetByIdAsync(int idUsuario) =>
             await _context.Usuarios.FindAsync(idUsuario);
 
+        public async Task<Usuarios?> GetByNameAsync(string UsuarioSistema) =>
+            await _context.Usuarios.FirstOrDefaultAsync(u => u.UsuarioSistema == UsuarioSistema);
+
         public async Task AddAsync(Usuarios usuario)
         {
             _context.Usuarios.Add(usuario);

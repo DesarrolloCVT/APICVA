@@ -19,6 +19,9 @@ namespace WebAPICVA.Services
         public async Task<Usuarios?> GetByIdAsync(int idUsuario) =>
             await _usuarioRepository.GetByIdAsync(idUsuario);
 
+        public async Task<Usuarios?> GetByNameAsync(string UsuarioSistema) =>
+            await _usuarioRepository.GetByNameAsync(UsuarioSistema);
+
         public async Task AddAsync(UsuariosDTO usuarioDto)
         {
             var usuario = new Usuarios

@@ -21,11 +21,23 @@ namespace WebAPICVA.Controllers
         public async Task<ActionResult<IEnumerable<Usuarios>>> GetUsuarios() =>
             Ok(await _usuarioService.GetAllAsync());
 
-        [HttpGet("{idUsuario}")]
+        [HttpGet("id/{idUsuario}")]
         public async Task<ActionResult<Usuarios>> GetUsuario(int idUsuario)
         {
             var usuario = await _usuarioService.GetByIdAsync(idUsuario);
             return usuario == null ? NotFound() : Ok(usuario);
+        }
+
+        [HttpGet("name/{UsuarioSistema}")]
+        public async Task<ActionResult<Usuarios>> GetNameUsuario(string UsuarioSistema)
+        {
+            var usuario = await _usuarioService.GetByNameAsync(UsuarioSistema);
+            if (usuario == null)
+            {
+                Console.WriteLine($"🔴 Usuario '{UsuarioSistema}' no encontrado.");
+                return NotFound();
+            }
+            return Ok(usuario);
         }
 
         [HttpPost]

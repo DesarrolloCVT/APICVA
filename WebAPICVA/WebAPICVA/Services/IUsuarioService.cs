@@ -7,6 +7,7 @@ namespace WebAPICVA.Services
     {
         Task<IEnumerable<Usuarios>> GetAllAsync();
         Task<Usuarios?> GetByIdAsync(int idUsuario);
+        Task<Usuarios?> GetByNameAsync(string UsuarioSistema);
         Task AddAsync(UsuariosDTO usuarioDto);
         Task UpdateAsync(int idUsuario, UsuariosDTO usuarioDto);
         Task DeleteAsync(int idUsuario);
