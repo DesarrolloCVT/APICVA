@@ -215,6 +215,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 
+
+
 builder.Services.Configure<IISServerOptions>(options =>
 {
     options.MaxRequestBodySize = 204857600; // 100MB
@@ -306,7 +308,14 @@ builder.Services.AddScoped<IBancoDetalleService, BancoDetalleService>();
 builder.Services.AddScoped<IIngresosDetalleRepository, IngresosDetalleRepository>();
 builder.Services.AddScoped<IIngresosDetalleService, IngresosDetalleService>();
 
-builder.Services.AddControllers();
+//builder.Services.AddControllers();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null; // Evita problemas con camelCase
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

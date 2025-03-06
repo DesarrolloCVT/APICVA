@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using WebAPICVA.Models;
 using WebAPICVA.Services;
 
@@ -21,14 +22,25 @@ namespace WebAPICVA.Controllers
         }
 
         [HttpPost("login")]
+        //[Consumes("application/json")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var token = await _authService.AuthenticateAsync(request.Usuario, request.Password);
+
+            Console.WriteLine($"Content-Type recibido: {Request.ContentType}");
 
             if (token == null)
             {
                 return Unauthorized(new { message = "Credenciales inválidas" });
             }
+
+            Console.WriteLine($"Usuario: {request.Usuario}, Password: {request.Password}");
+
+            /*using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
+            {
+                string body = await reader.ReadToEndAsync(); // ✅ Usar ReadToEndAsync()
+                Console.WriteLine($"Cuerpo recibido: {body}");
+            }*/
 
             return Ok(new { token });
         }
@@ -69,9 +81,6 @@ namespace WebAPICVA.Controllers
             {
                 Console.WriteLine($"❌ Error al decodificar el token: {ex.Message}");
             }
-
-            /* */
-
 
 
 
