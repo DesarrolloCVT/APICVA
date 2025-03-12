@@ -83,7 +83,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
             ClockSkew = TimeSpan.Zero // Asegurar que no haya tiempo extra en la validación
 
-            /*
+            /* Codigo Obsoleto 
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
             ValidateIssuer = false,

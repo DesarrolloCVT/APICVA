@@ -49,7 +49,6 @@ namespace WebAPICVA.Controllers
         [Authorize] // Asegura que solo usuarios autenticados puedan cerrar sesión
         public async Task<IActionResult> Logout()
         {
-
             var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (string.IsNullOrEmpty(token))
@@ -82,8 +81,6 @@ namespace WebAPICVA.Controllers
                 Console.WriteLine($"❌ Error al decodificar el token: {ex.Message}");
             }
 
-
-
             var tokenHandler = new JwtSecurityTokenHandler();
 
             try
@@ -111,9 +108,8 @@ namespace WebAPICVA.Controllers
                 return Unauthorized(new { message = "Token inválido o corrupto.", error = ex.Message });
             }
 
-            /*Respaldo */
-
-            /*var authHeader = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            /* Respaldo  
+            var authHeader = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
             {
                 return Unauthorized("No se encontró el token en la cabecera.");
@@ -196,7 +192,7 @@ namespace WebAPICVA.Controllers
             #endregion
         }
 
-        /* Codigo de Pruebas*/
+        #region Codigo de Pruebas 
         /* ----------------------- */
         [HttpGet("test-auth")]
         [Authorize]
@@ -221,5 +217,6 @@ namespace WebAPICVA.Controllers
             return Ok(new { message = "Usuario autenticado", claims });
         }
         /* ----------------------- */
+        #endregion
     }
 }

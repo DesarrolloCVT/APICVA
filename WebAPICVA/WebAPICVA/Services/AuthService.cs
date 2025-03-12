@@ -12,7 +12,9 @@ namespace WebAPICVA.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _config;
+        #region Key
         //private readonly string secretKey = "v@8vG3#xU!9zP$YkW6rE^tM2L&dC7qN%"; // 🔥 DEBE COINCIDIR CON Program.cs
+        #endregion
 
         public AuthService(ApplicationDbContext context, IConfiguration config)
         {
@@ -20,52 +22,17 @@ namespace WebAPICVA.Services
             _config = config;
         }
 
-        /* Codigo Obsoleto
-        public async Task<string?> AuthenticateAsync(string usuario, string password)
-        {
-            var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.UsuarioSistema == usuario);
-
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
-
-            bool passwordValida = BCrypt.Net.BCrypt.Verify(password, user.ClaveEncriptada.Trim());
-
-            if (usuario == null || !BCrypt.Net.BCrypt.Verify(password, user.ClaveEncriptada.Trim()))
-            {
-                return null; // Usuario no encontrado o contraseña incorrecta
-            }
-
-            var token = GenerateToken(1);
-            Console.WriteLine($"🔍 Token generado: {token}");
-
-            return GenerateToken(user.IdUsuario);
-        }*/
-
         public string GenerateToken(int userId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            //var key = Encoding.UTF8.GetBytes(secretKey); // 🔥 La clave usada para firmar el token
-            var key = Encoding.UTF8.GetBytes(_config["JwtSettings:Key"]);
-
-            /* Codigo Obsoleto
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256); // 🔥 Importante: HmacSha256
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-                    new Claim(ClaimTypes.Name, "NombreDeUsuario")
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = creds
-            };*/
+            var key = Encoding.UTF8.GetBytes(_config["JwtSettings:Key"]); // 🔥 La clave usada para firmar el token
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] {
                 new Claim(ClaimTypes.NameIdentifier, userId.ToString())
             }),
-                Expires = DateTime.UtcNow.AddHours(1), // Token válido por 1 hora
+                Expires = DateTime.Now.AddHours(1), // Token válido por 1 hora
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature
@@ -75,20 +42,6 @@ namespace WebAPICVA.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-
-        /* Codigo Obsoleto
-        public async Task<bool> IsTokenBlacklisted(string token)
-        {
-            return await _context.TokenBlacklist.AnyAsync(t => t.Token == token);
-        }
-        private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _config;
-        
-        public AuthService(ApplicationDbContext context, IConfiguration config)
-        {
-            _context = context;
-            _config = config;
-        }*/
 
         public async Task<string?> AuthenticateAsync(string usuario, string password)
         {
@@ -143,7 +96,7 @@ namespace WebAPICVA.Services
                 _config["JwtSettings:Issuer"],
                 _config["JwtSettings:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddHours(2),
+                expires: DateTime.Now.AddHours(2),
                 signingCredentials: creds);
 
             var TokenFormat = new JwtSecurityTokenHandler().WriteToken(token);
