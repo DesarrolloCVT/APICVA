@@ -5,9 +5,9 @@ namespace WebAPICVA.Repositories
     public interface IFacturaCompraDetalleRepository
     {
         Task<IEnumerable<FacturaCompraDetalle>> GetAllAsync();
-        Task<FacturaCompraDetalle?> GetByIdAsync(int folio);
+        Task<FacturaCompraDetalle?> GetByIdAsync(int id);
         Task AddAsync(FacturaCompraDetalle facturaCompraDetalle);
         Task UpdateAsync(FacturaCompraDetalle facturaCompraDetalle);
-        Task DeleteAsync(int folio);
+        Task DeleteAsync(int id);
     }
 }

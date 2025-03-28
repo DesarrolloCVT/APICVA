@@ -41,5 +41,10 @@ namespace WebAPICVA.Services
 
         public async Task DeleteAsync(int folio) =>
             await _ingresoDetalleRepository.DeleteAsync(folio);
+
+        public async Task<IEnumerable<IngresosDetalle>> GetFilterIngresosDetalle(int id) =>
+            await _ingresoDetalleRepository.GetFilterIngresosDetalle(id);
+
+        
     }
 }

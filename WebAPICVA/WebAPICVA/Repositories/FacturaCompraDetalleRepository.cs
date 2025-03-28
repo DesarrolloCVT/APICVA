@@ -16,8 +16,8 @@ namespace WebAPICVA.Repositories
         public async Task<IEnumerable<FacturaCompraDetalle>> GetAllAsync() =>
             await _context.FacturaCompraDetalle.ToListAsync();
 
-        public async Task<FacturaCompraDetalle?> GetByIdAsync(int folio) =>
-            await _context.FacturaCompraDetalle.FindAsync(folio);
+        public async Task<FacturaCompraDetalle?> GetByIdAsync(int id) =>
+            await _context.FacturaCompraDetalle.FindAsync(id);
 
         public async Task AddAsync(FacturaCompraDetalle facturaCompraDetalle)
         {
@@ -31,9 +31,9 @@ namespace WebAPICVA.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int folio)
+        public async Task DeleteAsync(int id)
         {
-            var facturaCompraDetalle = await _context.FacturaCompraDetalle.FindAsync(folio);
+            var facturaCompraDetalle = await _context.FacturaCompraDetalle.FindAsync(id);
             if (facturaCompraDetalle != null)
             {
                 _context.FacturaCompraDetalle.Remove(facturaCompraDetalle);

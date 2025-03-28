@@ -6,9 +6,9 @@ namespace WebAPICVA.Services
     public interface IIngresosService
     {
         Task<IEnumerable<Ingresos>> GetAllAsync();
-        Task<Ingresos?> GetByIdAsync(int folio);
+        Task<Ingresos?> GetByIdAsync(int id_ingreso);
         Task AddAsync(IngresosDTO ingresosDto);
-        Task UpdateAsync(int folio, IngresosDTO ingresosDto);
-        Task DeleteAsync(int folio);
+        Task UpdateAsync(int id_ingreso, IngresosDTO ingresosDto);
+        Task DeleteAsync(int id_ingreso);
     }
 }

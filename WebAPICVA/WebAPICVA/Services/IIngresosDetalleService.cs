@@ -7,6 +7,7 @@ namespace WebAPICVA.Services
     {
         Task<IEnumerable<IngresosDetalle>> GetAllAsync();
         Task<IngresosDetalle?> GetByIdAsync(int folio);
+        Task<IEnumerable<IngresosDetalle>> GetFilterIngresosDetalle(int id);
         Task AddAsync(IngresosDetalleDTO ingresosDetalleDto);
         Task UpdateAsync(int folio, IngresosDetalleDTO ingresosDetalleDto);
         Task DeleteAsync(int folio);

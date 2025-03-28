@@ -16,8 +16,8 @@ namespace WebAPICVA.Services
         public async Task<IEnumerable<FacturaCompraDetalle>> GetAllAsync() =>
             await _facturaCompraDetalleRepository.GetAllAsync();
 
-        public async Task<FacturaCompraDetalle?> GetByIdAsync(int folio) =>
-            await _facturaCompraDetalleRepository.GetByIdAsync(folio);
+        public async Task<FacturaCompraDetalle?> GetByIdAsync(int id) =>
+            await _facturaCompraDetalleRepository.GetByIdAsync(id);
 
         public async Task AddAsync(FacturaCompraDetalleDTO facturaCompraDetalleDto)
         {
@@ -31,9 +31,9 @@ namespace WebAPICVA.Services
             await _facturaCompraDetalleRepository.AddAsync(facturaCompraDetalle);
         }
 
-        public async Task UpdateAsync(int folio, FacturaCompraDetalleDTO facturaCompraDetalleDto)
+        public async Task UpdateAsync(int id, FacturaCompraDetalle facturaCompraDetalleDto)
         {
-            var facturaCompraDetalle = await _facturaCompraDetalleRepository.GetByIdAsync(folio);
+            var facturaCompraDetalle = await _facturaCompraDetalleRepository.GetByIdAsync(id);
             if (facturaCompraDetalle == null) return;
 
             facturaCompraDetalle.Folio = facturaCompraDetalleDto.Folio;

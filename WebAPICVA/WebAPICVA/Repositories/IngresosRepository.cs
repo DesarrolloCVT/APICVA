@@ -16,8 +16,8 @@ namespace WebAPICVA.Repositories
         public async Task<IEnumerable<Ingresos>> GetAllAsync() =>
             await _context.Ingresos.ToListAsync();
 
-        public async Task<Ingresos?> GetByIdAsync(int folio) =>
-            await _context.Ingresos.FindAsync(folio);
+        public async Task<Ingresos?> GetByIdAsync(int id_ingreso) =>
+            await _context.Ingresos.FindAsync(id_ingreso);
 
         public async Task AddAsync(Ingresos ingresos)
         {
@@ -31,9 +31,9 @@ namespace WebAPICVA.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int folio)
+        public async Task DeleteAsync(int id_ingreso)
         {
-            var ingresos = await _context.Ingresos.FindAsync(folio);
+            var ingresos = await _context.Ingresos.FindAsync(id_ingreso);
             if (ingresos != null)
             {
                 _context.Ingresos.Remove(ingresos);

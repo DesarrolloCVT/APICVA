@@ -2,11 +2,10 @@
 
 namespace WebAPICVA.DTOs
 {
-    public class BancoDTO
+    public class MonedaDTO
     {
         [Key]
-        public int Id_Banco { get; set; }
-        public int Codigo { get; set; }
+        public int Id_Monedas { get; set; }
         public string Nombre { get; set; }
     }
 }

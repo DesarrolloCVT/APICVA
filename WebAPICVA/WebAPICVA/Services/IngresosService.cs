@@ -16,15 +16,16 @@ namespace WebAPICVA.Services
         public async Task<IEnumerable<Ingresos>> GetAllAsync() =>
             await _ingresoRepository.GetAllAsync();
 
-        public async Task<Ingresos?> GetByIdAsync(int folio) =>
-            await _ingresoRepository.GetByIdAsync(folio);
+        public async Task<Ingresos?> GetByIdAsync(int id_ingreso) =>
+            await _ingresoRepository.GetByIdAsync(id_ingreso);
 
         public async Task AddAsync(IngresosDTO ingresoDto)
         {
             var ingresos = new Ingresos
             {
                 Folio = ingresoDto.Folio,
-                Tipo = ingresoDto.Tipo,
+                Tipo_Transaccion = ingresoDto.Tipo_Transaccion,
+                Subtipo_Transaccion = ingresoDto.Subtipo_Transaccion,
                 Moneda = ingresoDto.Moneda,
                 Fecha = ingresoDto.Fecha,
                 Cliente = ingresoDto.Cliente,
@@ -35,13 +36,15 @@ namespace WebAPICVA.Services
             await _ingresoRepository.AddAsync(ingresos);
         }
 
-        public async Task UpdateAsync(int folio, IngresosDTO ingresoDto)
+        public async Task UpdateAsync(int id_ingreso, IngresosDTO ingresoDto)
         {
-            var ingresos = await _ingresoRepository.GetByIdAsync(folio);
+            var ingresos = await _ingresoRepository.GetByIdAsync(id_ingreso);
             if (ingresos == null) return;
 
+            ingresos.Id_Ingreso = ingresoDto.Id_Ingreso;
             ingresos.Folio = ingresoDto.Folio;
-            ingresos.Tipo = ingresoDto.Tipo;
+            ingresos.Tipo_Transaccion = ingresoDto.Tipo_Transaccion;
+            ingresos.Subtipo_Transaccion = ingresoDto.Subtipo_Transaccion;
             ingresos.Moneda = ingresoDto.Moneda;
             ingresos.Fecha = ingresoDto.Fecha;
             ingresos.Cliente = ingresoDto.Cliente;
@@ -51,7 +54,7 @@ namespace WebAPICVA.Services
             await _ingresoRepository.UpdateAsync(ingresos);
         }
 
-        public async Task DeleteAsync(int folio) =>
-            await _ingresoRepository.DeleteAsync(folio);
+        public async Task DeleteAsync(int id_ingreso) =>
+            await _ingresoRepository.DeleteAsync(id_ingreso);
     }
 }

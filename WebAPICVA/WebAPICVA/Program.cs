@@ -292,6 +292,8 @@ builder.Services.AddScoped<IBancoService, BancoService>();
 builder.Services.AddScoped<ICuentasRepository, CuentasRepository>();
 builder.Services.AddScoped<ICuentasService, CuentasService>();
 builder.Services.AddScoped<IIngresosRepository, IngresosRepository>();
+builder.Services.AddScoped<IEgresosRepository, EgresosRepository>();
+builder.Services.AddScoped<IEgresosService, EgresosService>();
 builder.Services.AddScoped<IIngresosService, IngresosService>();
 builder.Services.AddScoped<ITipoRepository, TipoRepository>();
 builder.Services.AddScoped<ITipoService, TipoService>();

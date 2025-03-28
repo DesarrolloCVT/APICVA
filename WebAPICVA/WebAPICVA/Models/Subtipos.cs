@@ -2,12 +2,11 @@
 
 namespace WebAPICVA.Models
 {
-    public class Tipo
+    public class Subtipos
     {
         [Key]
-        public int Codigo { get; set; }
+        public int Id_Subtipos { get; set; }
+        public string Identificador { get; set; }
         public string Nombre { get; set; }
-        public string Tipo_Dato { get; set; }
-        public int Cuenta { get; set; }
     }
 }

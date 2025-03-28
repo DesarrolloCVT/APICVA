@@ -21,11 +21,11 @@ namespace WebAPICVA.Controllers
         public async Task<ActionResult<IEnumerable<FacturaCompra>>> GetFacturaCompraDetalle() =>
             Ok(await _facturaCompraDetalleService.GetAllAsync());
 
-        [HttpGet("{folio}")]
-        public async Task<ActionResult<FacturaCompra>> GetFacturaCompraDetalle(int folio)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<FacturaCompra>> GetFacturaCompraDetalle(int id)
         {
-            var banco = await _facturaCompraDetalleService.GetByIdAsync(folio);
-            return banco == null ? NotFound() : Ok(banco);
+            var facturaCompraDetalle = await _facturaCompraDetalleService.GetByIdAsync(id);
+            return facturaCompraDetalle == null ? NotFound() : Ok(facturaCompraDetalle);
         }
 
         [HttpPost]
@@ -35,17 +35,17 @@ namespace WebAPICVA.Controllers
             return CreatedAtAction(nameof(GetFacturaCompraDetalle), new { folio = facturaCompraDetalleDto.Folio }, facturaCompraDetalleDto);
         }
 
-        [HttpPut("{folio}")]
-        public async Task<IActionResult> PutFacturaCompraDetalle(int folio, FacturaCompraDetalleDTO facturaCompraDetalleDto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutFacturaCompraDetalle(int id, FacturaCompraDetalle facturaCompraDetalleDto)
         {
-            await _facturaCompraDetalleService.UpdateAsync(folio, facturaCompraDetalleDto);
+            await _facturaCompraDetalleService.UpdateAsync(id, facturaCompraDetalleDto);
             return NoContent();
         }
 
-        [HttpDelete("{folio}")]
-        public async Task<IActionResult> DeleteFacturaCompraDetalle(int folio)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFacturaCompraDetalle(int id)
         {
-            await _facturaCompraDetalleService.DeleteAsync(folio);
+            await _facturaCompraDetalleService.DeleteAsync(id);
             return NoContent();
         }
     }

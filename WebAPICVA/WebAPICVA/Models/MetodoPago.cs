@@ -2,12 +2,10 @@
 
 namespace WebAPICVA.Models
 {
-    public class Tipo
+    public class MetodoPago
     {
         [Key]
-        public int Codigo { get; set; }
+        public int Id_Metodo_Pago { get; set; }
         public string Nombre { get; set; }
-        public string Tipo_Dato { get; set; }
-        public int Cuenta { get; set; }
     }
 }

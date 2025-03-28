@@ -5,6 +5,7 @@ namespace WebAPICVA.Models
     public class FacturaCompra
     {
         [Key]
+        public int Id_Factura_Compra { get; set; }
         public int Folio { get; set; }
         public string Proveedor { get; set; }
         public DateTime Fecha { get; set; }

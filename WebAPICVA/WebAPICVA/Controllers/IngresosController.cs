@@ -21,10 +21,10 @@ namespace WebAPICVA.Controllers
         public async Task<ActionResult<IEnumerable<Ingresos>>> GetIngresos() =>
             Ok(await _ingresoService.GetAllAsync());
 
-        [HttpGet("{folio}")]
-        public async Task<ActionResult<Ingresos>> GetIngresos(int folio)
+        [HttpGet("{id_ingreso}")]
+        public async Task<ActionResult<Ingresos>> GetIngresos(int id_ingreso)
         {
-            var ingresos = await _ingresoService.GetByIdAsync(folio);
+            var ingresos = await _ingresoService.GetByIdAsync(id_ingreso);
             return ingresos == null ? NotFound() : Ok(ingresos);
         }
 
@@ -35,17 +35,17 @@ namespace WebAPICVA.Controllers
             return CreatedAtAction(nameof(GetIngresos), new { folio = ingresosDto.Folio }, ingresosDto);
         }
 
-        [HttpPut("{folio}")]
-        public async Task<IActionResult> PutIngresos(int folio, IngresosDTO ingresosDto)
+        [HttpPut("{id_ingreso}")]
+        public async Task<IActionResult> PutIngresos(int id_ingreso, IngresosDTO ingresosDto)
         {
-            await _ingresoService.UpdateAsync(folio, ingresosDto);
+            await _ingresoService.UpdateAsync(id_ingreso, ingresosDto);
             return NoContent();
         }
 
-        [HttpDelete("{folio}")]
-        public async Task<IActionResult> DeleteIngresos(int folio)
+        [HttpDelete("{id_ingreso}")]
+        public async Task<IActionResult> DeleteIngresos(int id_ingreso)
         {
-            await _ingresoService.DeleteAsync(folio);
+            await _ingresoService.DeleteAsync(id_ingreso);
             return NoContent();
         }
     }
