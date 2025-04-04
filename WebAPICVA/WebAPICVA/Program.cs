@@ -294,6 +294,8 @@ builder.Services.AddScoped<ICuentasService, CuentasService>();
 builder.Services.AddScoped<IIngresosRepository, IngresosRepository>();
 builder.Services.AddScoped<IEgresosRepository, EgresosRepository>();
 builder.Services.AddScoped<IEgresosService, EgresosService>();
+builder.Services.AddScoped<ITransaccionesRepository, TransaccionesRepository>();
+builder.Services.AddScoped<ITransaccionesService, TransaccionesService>();
 builder.Services.AddScoped<IIngresosService, IngresosService>();
 builder.Services.AddScoped<ITipoRepository, TipoRepository>();
 builder.Services.AddScoped<ITipoService, TipoService>();
@@ -309,6 +311,14 @@ builder.Services.AddScoped<IBancoDetalleRepository, BancoDetalleRepository>();
 builder.Services.AddScoped<IBancoDetalleService, BancoDetalleService>();
 builder.Services.AddScoped<IIngresosDetalleRepository, IngresosDetalleRepository>();
 builder.Services.AddScoped<IIngresosDetalleService, IngresosDetalleService>();
+builder.Services.AddScoped<IMetodoPagoRepository, MetodoPagoRepository>();
+builder.Services.AddScoped<IMetodoPagoService, MetodoPagoService>();
+builder.Services.AddScoped<ISubTiposRepository, SubTiposRepository>();
+builder.Services.AddScoped<ISubTiposService, SubTiposService>();
+builder.Services.AddScoped<IMonedasRepository, MonedasRepository>();
+builder.Services.AddScoped<IMonedasService, MonedasService>();
+builder.Services.AddScoped<ITransaccionDetalleRepository, TransaccionDetalleRepository>();
+builder.Services.AddScoped<ITransaccionDetalleService, TransaccionDetalleService>();
 
 //builder.Services.AddControllers();
 

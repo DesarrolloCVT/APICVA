@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebAPICVA.Data;
 using WebAPICVA.DTOs;
 using WebAPICVA.Models;
 using WebAPICVA.Services;
@@ -11,10 +13,12 @@ namespace WebAPICVA.Controllers
     public class TipoController : ControllerBase
     {
         private readonly ITipoService _tipoService;
+        private readonly ApplicationDbContext _context;
 
-        public TipoController(ITipoService tipoService)
+        public TipoController(ITipoService tipoService, ApplicationDbContext context)
         {
             _tipoService = tipoService;
+            _context = context;
         }
 
         [HttpGet]
@@ -47,6 +51,12 @@ namespace WebAPICVA.Controllers
         {
             await _tipoService.DeleteAsync(codigo);
             return NoContent();
+        }
+
+        [HttpGet("GetListTipo")]
+        public async Task<ActionResult<IEnumerable<Tipo>>> GetListTipo()
+        {
+            return await _context.Tipo.ToListAsync();
         }
     }
 }

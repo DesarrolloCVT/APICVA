@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebAPICVA.Data;
 using WebAPICVA.DTOs;
 using WebAPICVA.Models;
 using WebAPICVA.Services;
@@ -11,10 +13,12 @@ namespace WebAPICVA.Controllers
     public class SocioNegocioController : ControllerBase
     {
         private readonly ISocioNegocioService _socioNegocioService;
+        private readonly ApplicationDbContext _context;
 
-        public SocioNegocioController(ISocioNegocioService socioNegocioService)
+        public SocioNegocioController(ISocioNegocioService socioNegocioService, ApplicationDbContext context)
         {
             _socioNegocioService = socioNegocioService;
+            _context = context;
         }
 
         [HttpGet]
