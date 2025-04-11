@@ -21,10 +21,10 @@ namespace WebAPICVA.Controllers
         public async Task<ActionResult<IEnumerable<Cuentas>>> GetCuentas() =>
             Ok(await _cuentasService.GetAllAsync());
 
-        [HttpGet("{codigo}")]
-        public async Task<ActionResult<Cuentas>> GetCuentas(int codigo)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Cuentas>> GetCuentas(int id)
         {
-            var cuentas = await _cuentasService.GetByIdAsync(codigo);
+            var cuentas = await _cuentasService.GetByIdAsync(id);
             return cuentas == null ? NotFound() : Ok(cuentas);
         }
 
@@ -32,20 +32,20 @@ namespace WebAPICVA.Controllers
         public async Task<IActionResult> PostCuentas(CuentasDTO cuentasDto)
         {
             await _cuentasService.AddAsync(cuentasDto);
-            return CreatedAtAction(nameof(GetCuentas), new { codigo = cuentasDto.Codigo }, cuentasDto);
+            return CreatedAtAction(nameof(GetCuentas), new { id = cuentasDto.Id_Cuenta }, cuentasDto);
         }
 
-        [HttpPut("{codigo}")]
-        public async Task<IActionResult> PutCuentas(int codigo, CuentasDTO cuentasDto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutCuentas(int id, CuentasDTO cuentasDto)
         {
-            await _cuentasService.UpdateAsync(codigo, cuentasDto);
+            await _cuentasService.UpdateAsync(id, cuentasDto);
             return NoContent();
         }
 
-        [HttpDelete("{codigo}")]
-        public async Task<IActionResult> DeleteCuentas(int codigo)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCuentas(int id)
         {
-            await _cuentasService.DeleteAsync(codigo);
+            await _cuentasService.DeleteAsync(id);
             return NoContent();
         }
     }

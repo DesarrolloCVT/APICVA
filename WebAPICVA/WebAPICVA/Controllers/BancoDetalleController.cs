@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebAPICVA.Data;
 using WebAPICVA.DTOs;
 using WebAPICVA.Models;
 using WebAPICVA.Services;
@@ -11,10 +13,12 @@ namespace WebAPICVA.Controllers
     public class BancoDetalleController : ControllerBase
     {
         private readonly IBancoDetalleService _bancoDetalleService;
+        private readonly ApplicationDbContext _context;
 
-        public BancoDetalleController(IBancoDetalleService bancoDetalleService)
+        public BancoDetalleController(IBancoDetalleService bancoDetalleService, ApplicationDbContext applicationDbContext)
         {
             _bancoDetalleService = bancoDetalleService;
+            _context = applicationDbContext;
         }
 
         [HttpGet]
@@ -28,17 +32,32 @@ namespace WebAPICVA.Controllers
             return bancoDetalle == null ? NotFound() : Ok(bancoDetalle);
         }
 
+        [HttpGet("GetBancoDetalle")]
+        public async Task<ActionResult<BancoDetalle>> GetFilterFactVentaDetalle([FromQuery] int idBanco)
+        {
+            var detalles = await _context.BancoDetalle
+        .Where(d => d.Id_Banco == idBanco)
+        .ToListAsync();
+
+            if (!detalles.Any())
+            {
+                return NotFound("No se encontraron detalles para esta factura.");
+            }
+
+            return Ok(detalles);
+        }
+
         [HttpPost]
         public async Task<IActionResult> PostBancoDetalle(BancoDetalleDTO bancoDetalleDto)
         {
             await _bancoDetalleService.AddAsync(bancoDetalleDto);
-            return CreatedAtAction(nameof(GetBancoDetalle), new { codigo_banco = bancoDetalleDto.Codigo_Banco }, bancoDetalleDto);
+            return CreatedAtAction(nameof(GetBancoDetalle), new { id = bancoDetalleDto.Id_Banco_Detalle }, bancoDetalleDto);
         }
 
-        [HttpPut("{codigo_banco}")]
-        public async Task<IActionResult> PutBancoDetalle(int codigo_banco, BancoDetalleDTO bancoDetalleDto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutBancoDetalle(int id, BancoDetalleDTO bancoDetalleDto)
         {
-            await _bancoDetalleService.UpdateAsync(codigo_banco, bancoDetalleDto);
+            await _bancoDetalleService.UpdateAsync(id, bancoDetalleDto);
             return NoContent();
         }
 

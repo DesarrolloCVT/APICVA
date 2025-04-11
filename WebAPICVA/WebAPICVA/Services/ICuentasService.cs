@@ -6,9 +6,9 @@ namespace WebAPICVA.Services
     public interface ICuentasService
     {
         Task<IEnumerable<Cuentas>> GetAllAsync();
-        Task<Cuentas?> GetByIdAsync(int codigo);
+        Task<Cuentas?> GetByIdAsync(int id);
         Task AddAsync(CuentasDTO cuentasDto);
-        Task UpdateAsync(int codigo, CuentasDTO cuentasDto);
-        Task DeleteAsync(int codigo);
+        Task UpdateAsync(int id, CuentasDTO cuentasDto);
+        Task DeleteAsync(int id);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebAPICVA.DTOs;
 using WebAPICVA.Models;
 using WebAPICVA.Services;
@@ -21,10 +22,10 @@ namespace WebAPICVA.Controllers
         public async Task<ActionResult<IEnumerable<FacturaVenta>>> GetFacturaVenta() =>
             Ok(await _facturaVentaService.GetAllAsync());
 
-        [HttpGet("{folio}")]
-        public async Task<ActionResult<FacturaVenta>> GetFacturaVenta(int folio)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<FacturaVenta>> GetFacturaVenta(int id)
         {
-            var facturaVenta = await _facturaVentaService.GetByIdAsync(folio);
+            var facturaVenta = await _facturaVentaService.GetByIdAsync(id);
             return facturaVenta == null ? NotFound() : Ok(facturaVenta);
         }
 
@@ -32,20 +33,20 @@ namespace WebAPICVA.Controllers
         public async Task<IActionResult> PostFacturaVenta(FacturaVentaDTO facturaVentaDto)
         {
             await _facturaVentaService.AddAsync(facturaVentaDto);
-            return CreatedAtAction(nameof(GetFacturaVenta), new { folio = facturaVentaDto.Folio }, facturaVentaDto);
+            return CreatedAtAction(nameof(GetFacturaVenta), new { id = facturaVentaDto.Id_Factura_Venta }, facturaVentaDto);
         }
 
-        [HttpPut("{folio}")]
-        public async Task<IActionResult> PutFacturaVenta(int folio, FacturaVentaDTO facturaVentaDto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutFacturaVenta(int id, FacturaVentaDTO facturaVentaDto)
         {
-            await _facturaVentaService.UpdateAsync(folio, facturaVentaDto);
+            await _facturaVentaService.UpdateAsync(id, facturaVentaDto);
             return NoContent();
         }
 
-        [HttpDelete("{folio}")]
-        public async Task<IActionResult> DeleteFacturaVenta(int folio)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFacturaVenta(int id)
         {
-            await _facturaVentaService.DeleteAsync(folio);
+            await _facturaVentaService.DeleteAsync(id);
             return NoContent();
         }
     }

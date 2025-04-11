@@ -5,10 +5,10 @@ namespace WebAPICVA.Services
 {
     public interface IProductoService
     {
-        Task<IEnumerable<Producto>> GetAllAsync();
-        Task<Producto?> GetByIdAsync(int codigo);
-        Task AddAsync(ProductoDTO productoDto);
-        Task UpdateAsync(int codigo, ProductoDTO productoDto);
-        Task DeleteAsync(int codigo);
+        Task<IEnumerable<Productos>> GetAllAsync();
+        Task<Productos?> GetByIdAsync(int id);
+        Task AddAsync(ProductosDTO productoDto);
+        Task UpdateAsync(int id, ProductosDTO productoDto);
+        Task DeleteAsync(int id);
     }
 }

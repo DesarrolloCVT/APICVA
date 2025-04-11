@@ -16,8 +16,8 @@ namespace WebAPICVA.Repositories
         public async Task<IEnumerable<SocioNegocio>> GetAllAsync() =>
             await _context.SocioNegocio.ToListAsync();
 
-        public async Task<SocioNegocio?> GetByIdAsync(int codigo) =>
-            await _context.SocioNegocio.FindAsync(codigo);
+        public async Task<SocioNegocio?> GetByIdAsync(int id) =>
+            await _context.SocioNegocio.FindAsync(id);
 
         public async Task AddAsync(SocioNegocio socioNegocio)
         {
@@ -31,9 +31,9 @@ namespace WebAPICVA.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int codigo)
+        public async Task DeleteAsync(int id)
         {
-            var socioNegocio = await _context.SocioNegocio.FindAsync(codigo);
+            var socioNegocio = await _context.SocioNegocio.FindAsync(id);
             if (socioNegocio != null)
             {
                 _context.SocioNegocio.Remove(socioNegocio);

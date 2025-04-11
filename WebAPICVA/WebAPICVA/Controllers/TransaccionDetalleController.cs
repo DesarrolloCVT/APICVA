@@ -36,7 +36,8 @@ namespace WebAPICVA.Controllers
         public async Task<ActionResult<TransaccionDetalle>> GetFilterTransaccionDetalle([FromQuery] int idTransaccion)
         {
             var detalles = await _context.TransaccionDetalle
-        .Where(d => d.Id_Transaccion == idTransaccion) // Filtrar por la clave foránea
+        .Where(d => d.Id_Transaccion == idTransaccion 
+         || d.Id_Transaccion == null) // Filtrar por la clave foránea
         .ToListAsync();
 
             if (!detalles.Any())
@@ -54,10 +55,10 @@ namespace WebAPICVA.Controllers
             return CreatedAtAction(nameof(GetTransaccionDetalle), new { folio = transaccionDetalleDto.Folio_Factura }, transaccionDetalleDto);
         }
 
-        [HttpPut("{folio}")]
-        public async Task<IActionResult> PutTransaccionDetalle(int folio, TransaccionDetalleDTO transaccionDetalleDto)
+        [HttpPut("{id_transaccion_detalle}")]
+        public async Task<IActionResult> PutTransaccionDetalle(int id_transaccion_detalle, TransaccionDetalleDTO transaccionDetalleDto)
         {
-            await _transaccionDetalleService.UpdateAsync(folio, transaccionDetalleDto);
+            await _transaccionDetalleService.UpdateAsync(id_transaccion_detalle, transaccionDetalleDto);
             return NoContent();
         }
 

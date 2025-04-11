@@ -5,9 +5,9 @@ namespace WebAPICVA.Repositories
     public interface ISocioNegocioRepository
     {
         Task<IEnumerable<SocioNegocio>> GetAllAsync();
-        Task<SocioNegocio?> GetByIdAsync(int codigo);
+        Task<SocioNegocio?> GetByIdAsync(int id);
         Task AddAsync(SocioNegocio socioNegocio);
         Task UpdateAsync(SocioNegocio socioNegocio);
-        Task DeleteAsync(int codigo);
+        Task DeleteAsync(int id);
     }
 }

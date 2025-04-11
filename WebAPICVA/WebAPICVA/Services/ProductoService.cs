@@ -13,33 +13,34 @@ namespace WebAPICVA.Services
             _productoRepository = productoRepository;
         }
 
-        public async Task<IEnumerable<Producto>> GetAllAsync() =>
+        public async Task<IEnumerable<Productos>> GetAllAsync() =>
             await _productoRepository.GetAllAsync();
 
-        public async Task<Producto?> GetByIdAsync(int codigo) =>
+        public async Task<Productos?> GetByIdAsync(int codigo) =>
             await _productoRepository.GetByIdAsync(codigo);
 
-        public async Task AddAsync(ProductoDTO productoDto)
+        public async Task AddAsync(ProductosDTO productoDto)
         {
-            var producto = new Producto
+            var producto = new Productos
             {
-                codigo = productoDto.codigo,
-                producto = productoDto.producto
+                Id_Producto = productoDto.Id_Producto,
+                Codigo = productoDto.Codigo,
+                Producto = productoDto.Producto
             };
             await _productoRepository.AddAsync(producto);
         }
 
-        public async Task UpdateAsync(int codigo, ProductoDTO productoDto)
+        public async Task UpdateAsync(int id, ProductosDTO productoDto)
         {
-            var producto = await _productoRepository.GetByIdAsync(codigo);
+            var producto = await _productoRepository.GetByIdAsync(id);
             if (producto == null) return;
 
-            producto.codigo = productoDto.codigo;
-            producto.producto = productoDto.producto;
+            producto.Codigo = productoDto.Codigo;
+            producto.Producto = productoDto.Producto;
             await _productoRepository.UpdateAsync(producto);
         }
 
-        public async Task DeleteAsync(int codigo) =>
-            await _productoRepository.DeleteAsync(codigo);
+        public async Task DeleteAsync(int id) =>
+            await _productoRepository.DeleteAsync(id);
     }
 }

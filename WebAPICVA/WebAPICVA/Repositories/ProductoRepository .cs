@@ -13,27 +13,27 @@ namespace WebAPICVA.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Producto>> GetAllAsync() =>
+        public async Task<IEnumerable<Productos>> GetAllAsync() =>
             await _context.Productos.ToListAsync();
 
-        public async Task<Producto?> GetByIdAsync(int codigo) =>
-            await _context.Productos.FindAsync(codigo);
+        public async Task<Productos?> GetByIdAsync(int id) =>
+            await _context.Productos.FindAsync(id);
 
-        public async Task AddAsync(Producto producto)
+        public async Task AddAsync(Productos producto)
         {
             _context.Productos.Add(producto);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Producto producto)
+        public async Task UpdateAsync(Productos producto)
         {
             _context.Productos.Update(producto);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int codigo)
+        public async Task DeleteAsync(int id)
         {
-            var producto = await _context.Productos.FindAsync(codigo);
+            var producto = await _context.Productos.FindAsync(id);
             if (producto != null)
             {
                 _context.Productos.Remove(producto);

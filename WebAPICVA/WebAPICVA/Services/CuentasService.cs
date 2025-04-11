@@ -16,8 +16,8 @@ namespace WebAPICVA.Services
         public async Task<IEnumerable<Cuentas>> GetAllAsync() =>
             await _cuentasRepository.GetAllAsync();
 
-        public async Task<Cuentas?> GetByIdAsync(int codigo) =>
-            await _cuentasRepository.GetByIdAsync(codigo);
+        public async Task<Cuentas?> GetByIdAsync(int id) =>
+            await _cuentasRepository.GetByIdAsync(id);
 
         public async Task AddAsync(CuentasDTO cuentasDto)
         {
@@ -30,9 +30,9 @@ namespace WebAPICVA.Services
             await _cuentasRepository.AddAsync(cuentas);
         }
 
-        public async Task UpdateAsync(int codigo, CuentasDTO cuentasDto)
+        public async Task UpdateAsync(int id, CuentasDTO cuentasDto)
         {
-            var cuentas = await _cuentasRepository.GetByIdAsync(codigo);
+            var cuentas = await _cuentasRepository.GetByIdAsync(id);
             if (cuentas == null) return;
 
             cuentas.Codigo = cuentasDto.Codigo;
@@ -41,7 +41,7 @@ namespace WebAPICVA.Services
             await _cuentasRepository.UpdateAsync(cuentas);
         }
 
-        public async Task DeleteAsync(int codigo) =>
-            await _cuentasRepository.DeleteAsync(codigo);
+        public async Task DeleteAsync(int id) =>
+            await _cuentasRepository.DeleteAsync(id);
     }
 }

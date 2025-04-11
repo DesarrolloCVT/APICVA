@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPICVA.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    /*[ApiController]
+    [Route("[controller]")]*/
+    /*public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
@@ -29,5 +29,5 @@ namespace WebAPICVA.Controllers
             })
             .ToArray();
         }
-    }
+    }*/
 }

@@ -8,7 +8,7 @@ namespace WebAPICVA.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        public DbSet<Producto> Productos { get; set; }
+        public DbSet<Productos> Productos { get; set; }
         public DbSet<Usuarios> Usuarios { get; set; }
         public DbSet<SocioNegocio> SocioNegocio { get; set; }
         public DbSet<Banco> Banco { get; set; }
@@ -40,9 +40,27 @@ namespace WebAPICVA.Data
 
 
             modelBuilder.Entity<TransaccionDetalle>()
-            .HasOne(d => d.Transaccion) // Un detalle pertenece a un ingreso
+            .HasOne(d => d.Transaccion) // Un detalle pertenece a una Transaccion
             .WithMany(i => i.TransaccionesDetalles) // Un ingreso puede tener muchos detalles
-            .HasForeignKey(d => d.Id_Transaccion) // La clave foránea es Id_Ingreso
+            .HasForeignKey(d => d.Id_Transaccion) // La clave foránea es Id_Transaccion
+            .OnDelete(DeleteBehavior.Cascade); // Si se elimina un ingreso, se eliminan los detalles
+
+            modelBuilder.Entity<FacturaVentaDetalle>()
+            .HasOne(d => d.FacturaVentas) // Un detalle pertenece a una Factura Venta
+            .WithMany(i => i.FacturaVentasDetalles) // Un ingreso puede tener muchos detalles
+            .HasForeignKey(d => d.Id_Factura_Venta) // La clave foránea es Id_Factura_Venta
+            .OnDelete(DeleteBehavior.Cascade); // Si se elimina un ingreso, se eliminan los detalles
+
+            modelBuilder.Entity<FacturaCompraDetalle>()
+            .HasOne(d => d.FacturaCompras) // Un detalle pertenece a una Factura Venta
+            .WithMany(i => i.FacturaComprasDetalles) // Un ingreso puede tener muchos detalles
+            .HasForeignKey(d => d.Id_Factura_Compra) // La clave foránea es Id_Factura_Venta
+            .OnDelete(DeleteBehavior.Cascade); // Si se elimina un ingreso, se eliminan los detalles
+
+            modelBuilder.Entity<BancoDetalle>()
+            .HasOne(d => d.Bancos) // Un detalle pertenece a una Factura Venta
+            .WithMany(i => i.BancoDetalles) // Un ingreso puede tener muchos detalles
+            .HasForeignKey(d => d.Id_Banco) // La clave foránea es Id_Factura_Venta
             .OnDelete(DeleteBehavior.Cascade); // Si se elimina un ingreso, se eliminan los detalles
         }
     }

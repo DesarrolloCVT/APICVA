@@ -18,34 +18,34 @@ namespace WebAPICVA.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Producto>>> GetProductos() =>
+        public async Task<ActionResult<IEnumerable<Productos>>> GetProductos() =>
             Ok(await _productoService.GetAllAsync());
 
-        [HttpGet("{codigo}")]
-        public async Task<ActionResult<Producto>> GetProducto(int codigo)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Productos>> GetProducto(int id)
         {
-            var producto = await _productoService.GetByIdAsync(codigo);
+            var producto = await _productoService.GetByIdAsync(id);
             return producto == null ? NotFound() : Ok(producto);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostProducto(ProductoDTO productoDto)
+        public async Task<IActionResult> PostProducto(ProductosDTO productoDto)
         {
             await _productoService.AddAsync(productoDto);
-            return CreatedAtAction(nameof(GetProducto), new { codigo = productoDto.codigo }, productoDto);
+            return CreatedAtAction(nameof(GetProducto), new { id = productoDto.Id_Producto }, productoDto);
         }
 
-        [HttpPut("{codigo}")]
-        public async Task<IActionResult> PutProducto(int codigo, ProductoDTO productoDto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutProducto(int id, ProductosDTO productoDto)
         {
-            await _productoService.UpdateAsync(codigo, productoDto);
+            await _productoService.UpdateAsync(id, productoDto);
             return NoContent();
         }
 
-        [HttpDelete("{codigo}")]
-        public async Task<IActionResult> DeleteProducto(int codigo)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProducto(int id)
         {
-            await _productoService.DeleteAsync(codigo);
+            await _productoService.DeleteAsync(id);
             return NoContent();
         }
     }

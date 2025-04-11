@@ -6,9 +6,9 @@ namespace WebAPICVA.Services
     public interface ISocioNegocioService
     {
         Task<IEnumerable<SocioNegocio>> GetAllAsync();
-        Task<SocioNegocio?> GetByIdAsync(int codigo);
+        Task<SocioNegocio?> GetByIdAsync(int id);
         Task AddAsync(SocioNegocioDTO socioNegocioDto);
-        Task UpdateAsync(int codigo, SocioNegocioDTO socioNegocioDto);
-        Task DeleteAsync(int codigo);
+        Task UpdateAsync(int id, SocioNegocioDTO socioNegocioDto);
+        Task DeleteAsync(int id);
     }
 }

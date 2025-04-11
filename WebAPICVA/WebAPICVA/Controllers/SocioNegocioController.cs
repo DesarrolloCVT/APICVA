@@ -52,5 +52,22 @@ namespace WebAPICVA.Controllers
             await _socioNegocioService.DeleteAsync(codigo);
             return NoContent();
         }
+
+        [HttpGet("GetSocioNegocio")]
+        public async Task<ActionResult<SocioNegocio>> GetFilterSocioNegocios([FromQuery] string tipo)
+        {
+            var filtro = await _context.SocioNegocio
+        .Where(d => d.Tipo == tipo)
+        /*.Select(d => d.Nombre)
+        .Distinct()*/
+        .ToListAsync();
+
+            if (!filtro.Any())
+            {
+                return NotFound("No se encontraron detalles para este ingreso.");
+            }
+
+            return Ok(filtro);
+        }
     }
 }

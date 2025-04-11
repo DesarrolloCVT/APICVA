@@ -16,8 +16,8 @@ namespace WebAPICVA.Services
         public async Task<IEnumerable<SocioNegocio>> GetAllAsync() =>
             await _socioNegocioRepository.GetAllAsync();
 
-        public async Task<SocioNegocio?> GetByIdAsync(int codigo) =>
-            await _socioNegocioRepository.GetByIdAsync(codigo);
+        public async Task<SocioNegocio?> GetByIdAsync(int id) =>
+            await _socioNegocioRepository.GetByIdAsync(id);
 
         public async Task AddAsync(SocioNegocioDTO socioNegocioDto)
         {
@@ -31,9 +31,9 @@ namespace WebAPICVA.Services
             await _socioNegocioRepository.AddAsync(socioNegocio);
         }
 
-        public async Task UpdateAsync(int codigo, SocioNegocioDTO socioNegocioDto)
+        public async Task UpdateAsync(int id, SocioNegocioDTO socioNegocioDto)
         {
-            var socioNegocio = await _socioNegocioRepository.GetByIdAsync(codigo);
+            var socioNegocio = await _socioNegocioRepository.GetByIdAsync(id);
             if (socioNegocio == null) return;
 
             socioNegocio.Codigo = socioNegocioDto.Codigo;
@@ -43,7 +43,7 @@ namespace WebAPICVA.Services
             await _socioNegocioRepository.UpdateAsync(socioNegocio);
         }
 
-        public async Task DeleteAsync(int codigo) =>
-            await _socioNegocioRepository.DeleteAsync(codigo);
+        public async Task DeleteAsync(int id) =>
+            await _socioNegocioRepository.DeleteAsync(id);
     }
 }

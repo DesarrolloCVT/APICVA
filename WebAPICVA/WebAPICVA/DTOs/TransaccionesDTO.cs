@@ -18,6 +18,6 @@ namespace WebAPICVA.DTOs
         public string Cuenta { get; set; }
 
         // Relación con TransaccionDetalle (Uno a muchos)
-        public ICollection<TransaccionDetalle> TransaccionesDetalles { get; set; }
+        //public ICollection<TransaccionDetalle> TransaccionesDetalles { get; set; }
     }
 }

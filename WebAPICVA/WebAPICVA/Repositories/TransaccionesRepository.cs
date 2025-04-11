@@ -33,10 +33,10 @@ namespace WebAPICVA.Repositories
 
         public async Task DeleteAsync(int id_transaccion)
         {
-            var transacciones = await _context.Ingresos.FindAsync(id_transaccion);
+            var transacciones = await _context.Transacciones.FindAsync(id_transaccion);
             if (transacciones != null)
             {
-                _context.Ingresos.Remove(transacciones);
+                _context.Transacciones.Remove(transacciones);
                 await _context.SaveChangesAsync();
             }
         }
