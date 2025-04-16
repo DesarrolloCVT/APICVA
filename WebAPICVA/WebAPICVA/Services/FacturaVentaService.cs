@@ -47,5 +47,8 @@ namespace WebAPICVA.Services
 
         public async Task DeleteAsync(int id) =>
             await _facturaVentaRepository.DeleteAsync(id);
+
+        public async Task<IEnumerable<FacturaVenta>> GetFilterFactVenta() =>
+            await _facturaVentaRepository.GetFilterFactVenta();
     }
 }

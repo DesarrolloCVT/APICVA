@@ -6,6 +6,7 @@ namespace WebAPICVA.Repositories
     {
         Task<IEnumerable<FacturaCompra>> GetAllAsync();
         Task<FacturaCompra?> GetByIdAsync(int folio);
+        Task<IEnumerable<FacturaCompra>> GetFilterFactCompra();
         Task AddAsync(FacturaCompra facturaCompra);
         Task UpdateAsync(FacturaCompra facturaCompra);
         Task DeleteAsync(int folio);

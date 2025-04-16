@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebAPICVA.Data;
 using WebAPICVA.DTOs;
 using WebAPICVA.Models;
 using WebAPICVA.Services;
@@ -11,10 +13,12 @@ namespace WebAPICVA.Controllers
     public class FacturaCompraController : ControllerBase
     {
         private readonly IFacturaCompraService _facturaCompraService;
+        private readonly ApplicationDbContext _context;
 
-        public FacturaCompraController(IFacturaCompraService facturaCompraService)
+        public FacturaCompraController(IFacturaCompraService facturaCompraService, ApplicationDbContext applicationDbContext)
         {
             _facturaCompraService = facturaCompraService;
+            _context = applicationDbContext;
         }
 
         [HttpGet]
@@ -47,6 +51,25 @@ namespace WebAPICVA.Controllers
         {
             await _facturaCompraService.DeleteAsync(folio);
             return NoContent();
+        }
+
+        [HttpGet("GetConsultaConTotales")]
+        public async Task<ActionResult<FacturaCompra>> GetFilterFactCompra()
+        {
+            var resultado = await _context.FacturaCompra
+                .Include(fc => fc.FacturaComprasDetalles)
+                .Select(fc => new
+                {
+                    fc.Id_Factura_Compra,
+                    fc.Folio,
+                    fc.Proveedor,
+                    fc.Fecha,
+                    fc.Moneda,
+                    Total = fc.FacturaComprasDetalles.Sum(d => (long)d.Cantidad * d.Precio)
+                })
+                .ToListAsync();
+
+            return Ok(resultado);
         }
     }
 }

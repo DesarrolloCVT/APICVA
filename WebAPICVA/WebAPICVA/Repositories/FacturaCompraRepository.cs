@@ -40,5 +40,8 @@ namespace WebAPICVA.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<IEnumerable<FacturaCompra>> GetFilterFactCompra() =>
+            await _context.FacturaCompra.ToListAsync();
     }
 }

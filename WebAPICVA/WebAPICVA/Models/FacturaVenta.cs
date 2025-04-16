@@ -11,6 +11,7 @@ namespace WebAPICVA.Models
         public string Direccion_Despacho { get; set; }
         public string Moneda { get; set; }
         public DateTime Fecha { get; set; }
+        private long Total { get; set; }
 
         // Relación con TransaccionDetalle (Uno a muchos)
         public ICollection<FacturaVentaDetalle> FacturaVentasDetalles { get; set; }
